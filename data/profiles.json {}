@@ -1,0 +1,12 @@
+{
+  "ronnie-ezell": {
+    "name": "Ronnie Ezell",
+    "profilePicture": "https://facebook.com/profile.jpg",
+    "coverPhoto": "https://facebook.com/cover.jpg",
+    "friends": [
+      "https://facebook.com/friend.1",
+      "https://facebook.com/friend.2"
+    ],
+    "about": "Lives in Dallas, Texas"
+  }
+}
