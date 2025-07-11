@@ -1,13 +1,17 @@
 {
-  "name": "browserless-scraper",
+  "name": "mighty-bat-bot",
   "version": "1.0.0",
-  "main": "server.js",
+  "description": "🦇 Powerful Facebook scraper and bot using Browserless & Puppeteer",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node src/index.js"
   },
+  "author": "Charles",
+  "license": "MIT",
   "dependencies": {
     "axios": "^1.6.8",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "dotenv": "^16.3.1",
+    "express": "^4.19.2",
+    "puppeteer-core": "^22.8.2"
   }
 }
