@@ -1,45 +1,47 @@
-require("dotenv").config();
 const express = require("express");
-const puppeteer = require("puppeteer-core");
+const axios = require("axios");
+require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const BROWSERLESS_API_KEY = process.env.BROWSERLESS_API_KEY;
 
-if (!BROWSERLESS_API_KEY) {
-  throw new Error("Missing BROWSERLESS_API_KEY in environment variables.");
-}
-
-// Root route for testing
+// Root route: shows instructions
 app.get("/", (req, res) => {
-  res.send("✅ Server is running. Go to /scrape-preview to test scraping.");
+  res.send(`
+    <h2>✅ Browserless Scraper Ready</h2>
+    <p>Test it at: <a href="/scrape-preview">/scrape-preview</a></p>
+    <p>Or scrape another site: <code>/scrape-preview?url=https://your-site.com</code></p>
+  `);
 });
 
-// Preview scrape route
+// Scrape preview route
 app.get("/scrape-preview", async (req, res) => {
   try {
-    const browser = await puppeteer.connect({
-      browserWSEndpoint: `wss://chrome.browserless.io?token=${BROWSERLESS_API_KEY}`,
-    });
+    const url = req.query.url || "https://example.com";
 
-    const page = await browser.newPage();
-    await page.goto("https://example.com", { waitUntil: "domcontentloaded" });
+    const response = await axios.post(
+      `https://production-sfo.browserless.io/content?token=${BROWSERLESS_API_KEY}`,
+      { url },
+      {
+        headers: {
+          "Cache-Control": "no-cache",
+          "Content-Type": "application/json"
+        }
+      }
+    );
 
-    const title = await page.title();
-    await browser.close();
+    const html = response.data;
+    const match = html.match(/<title>(.*?)<\/title>/i);
+    const title = match ? match[1] : "No title found";
 
-    res.send(`🔍 Page Title: ${title}`);
+    res.send(`<h1>🔍 Page Title: ${title}</h1>`);
   } catch (error) {
-    console.error("❌ Scraping error:", error);
-    res.status(500).send(`Failed to scrape: ${error.message}`);
+    console.error("❌ Scraping failed:", error.message);
+    res.status(500).send(`❌ Scraping failed: ${error.message}`);
   }
 });
 
-// Optional health check route
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok", timestamp: Date.now() });
-});
-
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`✅ Server is running at http://localhost:${PORT}`);
 });
