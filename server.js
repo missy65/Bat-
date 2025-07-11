@@ -6,45 +6,32 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const BROWSERLESS_API_KEY = process.env.BROWSERLESS_API_KEY;
 
-app.get("/", (req, res) => {
-  res.send("✅ Server is live. Go to /scrape-preview?url=https://example.com");
-});
-
 app.get("/scrape-preview", async (req, res) => {
-  const targetURL = req.query.url || "https://example.com";
-
-  const query = {
-    query: `
-      query {
-        goto(url: "${targetURL}") {
-          document {
-            title
-          }
-        }
-      }
-    `
-  };
-
   try {
+    const url = req.query.url || "https://example.com";
+
     const response = await axios.post(
-      `https://chrome.browserless.io/browserql?token=${BROWSERLESS_API_KEY}`,
-      query,
+      `https://production-sfo.browserless.io/content?token=${BROWSERLESS_API_KEY}`,
+      { url },
       {
         headers: {
-          "Content-Type": "application/json",
           "Cache-Control": "no-cache",
-        },
+          "Content-Type": "application/json"
+        }
       }
     );
 
-    const title = response.data?.data?.goto?.document?.title;
-    res.send(`<h1>🔍 Page Title:</h1><p>${title}</p>`);
+    const html = response.data;
+    const match = html.match(/<title>(.*?)<\/title>/i);
+    const title = match ? match[1] : "No title found";
+
+    res.send(`<h1>🔍 Page Title: ${title}</h1>`);
   } catch (error) {
-    console.error("❌ Error:", error.message);
-    res.status(500).send(`Failed to scrape: ${error.message}`);
+    console.error("❌ Scraping failed:", error.message);
+    res.status(500).send(`❌ Scraping failed: ${error.message}`);
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`✅ Server is running: http://localhost:${PORT}`);
 });
