@@ -3,12 +3,18 @@ const puppeteer = require("puppeteer-core");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Replace this with your environment variable in production
 const BROWSERLESS_API_KEY = process.env.BROWSERLESS_API_KEY || "2SexVzQVpMy2pWY2dfb7582c7a519bd6db9249c70a5fc7bc2";
+
+app.get("/", (req, res) => {
+  res.send("✅ Server is running. Go to /scrape-preview to test scraping.");
+});
 
 app.get("/scrape-preview", async (req, res) => {
   try {
     const browser = await puppeteer.connect({
-      browserWSEndpoint: `wss://chrome.browserless.io?token=${BROWSERLESS_API_KEY}`,
+      browserWSEndpoint: `wss://chrome.browserless.io?token=${BROWSERLESS_API_KEY}`
     });
 
     const page = await browser.newPage();
@@ -24,7 +30,6 @@ app.get("/scrape-preview", async (req, res) => {
   }
 });
 
-// ✅ This is critical!
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
