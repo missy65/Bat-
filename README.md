@@ -1,14 +1,7 @@
-# Browserless Scraper
+# Browserless Scraper (BrowserQL)
 
-This Node.js app uses puppeteer-core with browserless.io to scrape websites without installing Chromium locally.
+This app uses Express + Browserless BrowserQL to scrape live website data.
 
-## Route
+## Usage
 
-- `/scrape-preview` — returns `<title>` of https://example.com
-
-## Deploy
-
-1. Add your BROWSERLESS_API_KEY in Railway → Variables
-2. Hit Deploy
-
-MIT License
+Visit:
