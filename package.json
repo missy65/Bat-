@@ -2,18 +2,22 @@
   "name": "mighty-bat-bot",
   "version": "1.0.0",
   "description": "🦇 Facebook profile scraper and cloner bot",
-  "main": "src/webServer.js",
+  "main": "src/index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node src/webServer.js",
-    "cli": "node src/index.js"
+    "start": "node src/index.js",
+    "web-server": "node src/webServer.js"
   },
+  "keywords": ["facebook", "scraper", "automation", "stealth", "puppeteer"],
+  "author": "Charles",
+  "license": "MIT",
   "dependencies": {
     "axios": "^1.6.8",
     "body-parser": "^1.20.2",
-    "chalk": "^5.3.0",
+    "chalk": "^4.1.2",
     "express": "^4.18.2",
     "puppeteer": "^22.5.0",
-    "user-agents": "^1.0.124"
+    "user-agents": "^1.0.124",
+    "dotenv": "^16.4.5"
   }
 }
