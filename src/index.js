@@ -4,7 +4,6 @@ const runBot = require('./facebook/controller');
 const logger = require('./utils/logger');
 const readline = require('readline');
 
-// Prompt user for target profile
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
