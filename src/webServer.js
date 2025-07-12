@@ -2,33 +2,45 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
 const runBot = require('./facebook/controller');
 const logger = require('./utils/logger');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(bodyParser.urlencoded({ extended: true }));
 
+// Home page with form
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+  res.send(`
+    <h1>Mighty Bat Bot 🦇</h1>
+    <form method="POST" action="/run">
+      <label>Facebook Profile URL:</label><br>
+      <input type="text" name="profileUrl" style="width:300px;" required />
+      <br><br>
+      <button type="submit">🧠 Launch Bot</button>
+    </form>
+  `);
 });
 
-app.post('/start-mission', async (req, res) => {
+// Handle bot trigger
+app.post('/run', async (req, res) => {
   const { profileUrl } = req.body;
-  logger.info(`🧠 Web Mission Target: ${profileUrl}`);
+
+  if (!profileUrl || !profileUrl.includes('facebook.com')) {
+    return res.send('❌ Invalid Facebook URL.');
+  }
+
+  logger.info(`🧠 Received profile: ${profileUrl}`);
   try {
     await runBot(profileUrl);
-    res.send(`<h2>✅ Mission complete for: ${profileUrl}</h2>`);
-  } catch (error) {
-    res.status(500).send(`<h2>❌ Error: ${error.message}</h2>`);
+    res.send('✅ Bot completed successfully. Check logs for details.');
+  } catch (err) {
+    logger.error('❌ Bot failed:', err.message);
+    res.status(500).send('❌ Error running the bot.');
   }
 });
 
-module.exports = function startWebServer() {
-  app.listen(PORT, () => {
-    logger.success(`🌐 Web server ready on port ${PORT}`);
-  });
-};
+app.listen(PORT, () => {
+  logger.success(`🌐 Web server listening on port ${PORT}`);
+});
