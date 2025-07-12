@@ -1,33 +1,32 @@
-// src/index.js
-
 const express = require('express');
-const logger = require('./utils/logger');
 const { runForTargetProfile } = require('./facebook/controller');
+const logger = require('./utils/logger');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-  res.send('🦇 Mighty Bat Bot is ready. Use /run?url=https://facebook.com/...');
+  res.send(`<h2>🦇 Mighty Bat Bot is alive</h2><p>Use <code>/run?url=FACEBOOK_PROFILE_URL</code> to begin a mission.</p>`);
 });
 
 app.get('/run', async (req, res) => {
-  const url = req.query.url;
-
-  if (!url || !url.includes('facebook.com')) {
-    return res.status(400).send('❌ Invalid or missing Facebook URL');
+  const profileUrl = req.query.url;
+  if (!profileUrl) {
+    return res.status(400).send('❌ No URL provided. Add ?url=https://facebook.com/... to the request.');
   }
 
+  logger.info(`🧠 Received mission: ${profileUrl}`);
+
   try {
-    logger.info(`🟢 Starting bot for target: ${url}`);
-    await runForTargetProfile(url);
-    res.send(`✅ Mission complete for: ${url}`);
-  } catch (error) {
-    logger.error('❌ Mission failed:', error.message);
-    res.status(500).send(`❌ Failed to run bot: ${error.message}`);
+    await runForTargetProfile(profileUrl);
+    res.send(`✅ Mission completed for ${profileUrl}`);
+  } catch (err) {
+    logger.error(`❌ Mission failed: ${err.message}`);
+    res.status(500).send(`❌ Failed: ${err.message}`);
   }
 });
 
 app.listen(PORT, () => {
-  logger.info(`🚀 Server running at http://localhost:${PORT}`);
+  logger.success(`🦇 Server ready! Enter: /run?url=https://facebook.com/...`);
 });
