@@ -1,4 +1,5 @@
 // src/webServer.js
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const runBot = require('./facebook/controller');
@@ -11,7 +12,6 @@ const PORT = process.env.PORT || 5000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Show form at homepage
 app.get('/', (req, res) => {
   res.send(`
     <h2>🦇 Mighty Bat Bot - Web Trigger</h2>
@@ -23,25 +23,20 @@ app.get('/', (req, res) => {
   `);
 });
 
-// Handle POST to trigger bot
 app.post('/start', async (req, res) => {
-  const profileUrl = req.body.profileUrl;
-
-  if (!profileUrl || !profileUrl.startsWith('http')) {
-    return res.status(400).send('❌ Invalid URL. Try again.');
-  }
+  const { profileUrl } = req.body;
+  if (!profileUrl) return res.status(400).send('❌ Missing profile URL');
 
   try {
-    logger.info(`🚀 Running bot on: ${profileUrl}`);
+    logger.info(`Target: ${profileUrl}`);
     await runBot(profileUrl);
-    res.send(`✅ Bot completed for: ${profileUrl}`);
+    res.send(`✅ Done! Bot completed for ${profileUrl}`);
   } catch (err) {
     logger.error(err.message);
-    res.status(500).send('❌ Bot crashed. Check Railway logs.');
+    res.status(500).send('❌ Bot failed.');
   }
 });
 
-// Start server
 app.listen(PORT, () => {
-  logger.info(`🌐 Server live at http://localhost:${PORT}`);
+  logger.success(`🌐 Server ready at http://localhost:${PORT}`);
 });
