@@ -5,19 +5,25 @@
   "main": "src/index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node src/index.js",
-    "web-server": "node src/webServer.js"
+    "start": "node src/index.js",          // CLI version (manual prompt)
+    "web-server": "node src/webServer.js"  // Web version for Railway
   },
-  "keywords": ["facebook", "scraper", "automation", "stealth", "puppeteer"],
+  "keywords": [
+    "facebook",
+    "scraper",
+    "automation",
+    "puppeteer",
+    "stealth"
+  ],
   "author": "Charles",
   "license": "MIT",
   "dependencies": {
     "axios": "^1.6.8",
     "body-parser": "^1.20.2",
-    "chalk": "^4.1.2",
+    "chalk": "^5.3.0",
+    "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "puppeteer": "^22.5.0",
-    "user-agents": "^1.0.124",
-    "dotenv": "^16.4.5"
+    "user-agents": "^1.0.124"
   }
 }
