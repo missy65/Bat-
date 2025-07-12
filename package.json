@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node src/index.js",          // CLI version (manual prompt)
-    "web-server": "node src/webServer.js"  // Web version for Railway
+    "start": "node src/index.js",
+    "web-server": "node src/webServer.js"
   },
   "keywords": [
     "facebook",
